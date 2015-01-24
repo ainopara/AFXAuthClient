@@ -27,7 +27,18 @@
 // THE SOFTWARE.
 //
 
-#import "AFHTTPClient.h"
+
+//Switch between base class of AFXAuthClient. If true we are using NSURLSession mechanism introduced in iOS7
+#define AFX_USING_NSURLSESSION 0
+
+#if (AFX_USING_NSURLSESSION && \
+( ( defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090) || \
+( defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000 ) ))
+#import "AFHTTPSessionManager.h"
+#else
+#import "AFHTTPRequestOperationManager.h"
+#endif
+
 
 @class AFXAuthToken;
 
@@ -35,7 +46,16 @@ extern NSString *const AFXAuthModeClient;
 extern NSString *const AFXAuthModeAnon;
 extern NSString *const AFXAuthModeReverse;
 
-@interface AFXAuthClient : AFHTTPClient {
+@interface AFXAuthClient :
+#if (AFX_USING_NSURLSESSION && \
+( ( defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090) || \
+( defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000 ) ))
+AFHTTPSessionManager
+#else
+AFHTTPRequestOperationManager
+#endif
+
+{
     NSString *_nonce;
     NSString *_timestamp;
 }
@@ -47,7 +67,7 @@ extern NSString *const AFXAuthModeReverse;
 /**
 
  */
-@property (strong, nonatomic) AFXAuthToken *token;
+@property (nonatomic, strong) AFXAuthToken* token;
 
 ///---------------------
 /// @name Initialization
