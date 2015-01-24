@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'AFXAuthClient'
-  s.version      = '1.1'
+  s.version      = '1.2'
   s.summary      = 'AFNetworking Extension for XAuth Authentication.'
   s.homepage     = 'https://github.com/romaonthego/AFXAuthClient'
   s.license      = { :type => "MIT", :file => "LICENSE" }
