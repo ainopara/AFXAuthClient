@@ -31,7 +31,6 @@
 #import "AFHTTPRequestOperation.h"
 
 #import "AFXAuthRequestSerializer.h"
-#import <objc/message.h>
 
 NSString *const AFXAuthModeClient = @"client_auth";
 NSString *const AFXAuthModeAnon = @"anon_auth";
@@ -62,7 +61,7 @@ NSString *const AFXAuthModeReverse = @"reverse_auth";
 
 
 - (void)authorizeUsingXAuthWithAccessTokenPath:(NSString *)accessTokenPath
-                                  accessMethod:(NSString *)accessMethod
+                                  accessMethod:(AFXAuthHttpRequestMethod)accessMethod
                                       username:(NSString *)username
                                       password:(NSString *)password
                                        success:(void (^)(AFXAuthToken *accessToken))success
@@ -72,7 +71,7 @@ NSString *const AFXAuthModeReverse = @"reverse_auth";
 }
 
 - (void)authorizeUsingXAuthWithAccessTokenPath:(NSString *)accessTokenPath
-                                  accessMethod:(NSString *)accessMethod
+                                  accessMethod:(AFXAuthHttpRequestMethod)accessMethod
                                           mode:(NSString *)mode
                                       username:(NSString *)username
                                       password:(NSString *)password
@@ -86,25 +85,41 @@ NSString *const AFXAuthModeReverse = @"reverse_auth";
                                  @"x_auth_password": self.password,
                                  @"x_auth_username": self.username};
 
-    id successBlock = ^(AFHTTPRequestOperation *operation, id responseObject) {
+    id successBlock = ^(NSURLSessionDataTask *task, id responseObject) {
         NSString *queryString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         _token = [[AFXAuthToken alloc] initWithQueryString:queryString];
         if (success)
             success(_token);
     };
     
-    id failureBlock = ^(AFHTTPRequestOperation *operation, NSError *error) {
+    id failureBlock = ^(NSURLSessionDataTask *task, NSError *error) {
         if (failure)
             failure(error);
     };
     
     //ensure valid access method
-    NSArray* httpVerbs=@[@"PUT",@"GET",@"POST",@"HEAD",@"PATCH",@"DELETE"];
-    NSAssert(([httpVerbs containsObject:accessMethod]), @"Invalid access method");
-    
-    //perform selector proper for access method
-    SEL selector=NSSelectorFromString([accessMethod stringByAppendingString:@":parameters:success:failure:"]);
-    objc_msgSend(self, selector,accessTokenPath,parameters,successBlock,failureBlock);
+    switch (accessMethod) {
+        case AFXAuthHttpRequestMethodGET:
+            [self GET:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
+            break;
+        case AFXAuthHttpRequestMethodPOST:
+            [self POST:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
+            break;
+        case AFXAuthHttpRequestMethodPUT:
+            [self PUT:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
+            break;
+        case AFXAuthHttpRequestMethodHEAD:
+            [self HEAD:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
+            break;
+        case AFXAuthHttpRequestMethodPATCH:
+            [self PATCH:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
+            break;
+        case AFXAuthHttpRequestMethodDELETE:
+            [self DELETE:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
+            break;
+        default:
+            break;
+    }
 }
 
 
