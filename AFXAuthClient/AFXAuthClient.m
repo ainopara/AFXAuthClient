@@ -28,7 +28,6 @@
 //
 
 #import "AFXAuthClient.h"
-#import "AFHTTPRequestOperation.h"
 
 #import "AFXAuthRequestSerializer.h"
 
@@ -61,7 +60,7 @@ NSString *const AFXAuthModeReverse = @"reverse_auth";
 
 
 - (void)authorizeUsingXAuthWithAccessTokenPath:(NSString *)accessTokenPath
-                                  accessMethod:(AFXAuthHttpRequestMethod)accessMethod
+                                  accessMethod:(AFXAuthRequestMethod)accessMethod
                                       username:(NSString *)username
                                       password:(NSString *)password
                                        success:(void (^)(AFXAuthToken *accessToken))success
@@ -71,7 +70,7 @@ NSString *const AFXAuthModeReverse = @"reverse_auth";
 }
 
 - (void)authorizeUsingXAuthWithAccessTokenPath:(NSString *)accessTokenPath
-                                  accessMethod:(AFXAuthHttpRequestMethod)accessMethod
+                                  accessMethod:(AFXAuthRequestMethod)accessMethod
                                           mode:(NSString *)mode
                                       username:(NSString *)username
                                       password:(NSString *)password
@@ -99,22 +98,22 @@ NSString *const AFXAuthModeReverse = @"reverse_auth";
     
     //ensure valid access method
     switch (accessMethod) {
-        case AFXAuthHttpRequestMethodGET:
-            [self GET:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
+        case AFXAuthRequestMethodGET:
+            [self GET:accessTokenPath parameters:parameters progress:nil success:successBlock failure:failureBlock];
             break;
-        case AFXAuthHttpRequestMethodPOST:
-            [self POST:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
+        case AFXAuthRequestMethodPOST:
+            [self POST:accessTokenPath parameters:parameters progress:nil success:successBlock failure:failureBlock];
             break;
-        case AFXAuthHttpRequestMethodPUT:
+        case AFXAuthRequestMethodPUT:
             [self PUT:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
             break;
-        case AFXAuthHttpRequestMethodHEAD:
+        case AFXAuthRequestMethodHEAD:
             [self HEAD:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
             break;
-        case AFXAuthHttpRequestMethodPATCH:
+        case AFXAuthRequestMethodPATCH:
             [self PATCH:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
             break;
-        case AFXAuthHttpRequestMethodDELETE:
+        case AFXAuthRequestMethodDELETE:
             [self DELETE:accessTokenPath parameters:parameters success:successBlock failure:failureBlock];
             break;
         default:

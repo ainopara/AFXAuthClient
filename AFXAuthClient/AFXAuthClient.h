@@ -35,13 +35,13 @@ extern NSString *const AFXAuthModeClient;
 extern NSString *const AFXAuthModeAnon;
 extern NSString *const AFXAuthModeReverse;
 
-typedef NS_ENUM(NSUInteger, AFXAuthHttpRequestMethod) {
-    AFXAuthHttpRequestMethodPUT,
-    AFXAuthHttpRequestMethodGET,
-    AFXAuthHttpRequestMethodPOST,
-    AFXAuthHttpRequestMethodHEAD,
-    AFXAuthHttpRequestMethodPATCH,
-    AFXAuthHttpRequestMethodDELETE,
+typedef NS_ENUM(NSUInteger, AFXAuthRequestMethod) {
+    AFXAuthRequestMethodPUT,
+    AFXAuthRequestMethodGET,
+    AFXAuthRequestMethodPOST,
+    AFXAuthRequestMethodHEAD,
+    AFXAuthRequestMethodPATCH,
+    AFXAuthRequestMethodDELETE,
 };
 
 @interface AFXAuthClient : AFHTTPSessionManager
@@ -77,7 +77,7 @@ typedef NS_ENUM(NSUInteger, AFXAuthHttpRequestMethod) {
  Authorize user using x_auth_mode = client_auth
  */
 - (void)authorizeUsingXAuthWithAccessTokenPath:(NSString *)accessTokenPath
-                                  accessMethod:(AFXAuthHttpRequestMethod)accessMethod
+                                  accessMethod:(AFXAuthRequestMethod)accessMethod
                                       username:(NSString *)username
                                       password:(NSString *)password
                                        success:(void (^)(AFXAuthToken *accessToken))success
@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, AFXAuthHttpRequestMethod) {
  Authorize user using any x_auth_mode 
  */
 - (void)authorizeUsingXAuthWithAccessTokenPath:(NSString *)accessTokenPath
-                                  accessMethod:(AFXAuthHttpRequestMethod)accessMethod
+                                  accessMethod:(AFXAuthRequestMethod)accessMethod
                                           mode:(NSString *)mode
                                       username:(NSString *)username
                                       password:(NSString *)password
